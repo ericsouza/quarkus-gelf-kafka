@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false" scan="false">
+	<property name="application" value="quarkus-logback-kafka"/>
+	<property name="origin" value="${KAFKA_LOGS_ORIGIN:-local}"/>
+	<property name="kafkaEnable" value="${KAFKA_LOGS_ENABLE:-true}"/>
+	<property name="kafkaBootstrap"
+			  value="${KAFKA_LOGS_BOOTSTRAP:-localhost:9092}"/>
+
+	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<charset>UTF-8</charset>
+			<pattern>%d{ISO8601} [%thread] %-5level %logger{36} - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="ASYNC_CONSOLE" class="ch.qos.logback.classic.AsyncAppender">
+		<queueSize>1000</queueSize>
+		<neverBlock>false</neverBlock>
+		<appender-ref ref="CONSOLE"/>
+	</appender>
+
+	<!-- Kafka configuration -->
+	<if condition='property("kafkaEnable").equalsIgnoreCase("true")'>
+		<then>
+			<appender name="KAFKA" class="com.github.danielwegener.logback.kafka.KafkaAppender">
+				<encoder class="com.github.danielwegener.logback.kafka.encoding.LayoutKafkaMessageEncoder">
+					<layout class="me.moocar.logbackgelf.GelfLayout">
+						<shortMessageLayout class="ch.qos.logback.classic.PatternLayout">
+							<pattern>%.-100(%m%rEx)</pattern>
+						</shortMessageLayout>
+						<fullMessageLayout class="ch.qos.logback.classic.PatternLayout">
+							<pattern>%m%rEx</pattern>
+						</fullMessageLayout>
+						<useLoggerName>true</useLoggerName>
+						<useThreadName>true</useThreadName>
+						<includeFullMDC>true</includeFullMDC>
+						<staticField class="me.moocar.logbackgelf.Field">
+							<key>_facility</key>
+							<value>${application}</value>
+						</staticField>
+						<staticField class="me.moocar.logbackgelf.Field">
+							<key>_origin</key>
+							<value>${origin}</value>
+						</staticField>
+					</layout>
+				</encoder>
+				<topic>${application}</topic>
+				<keyingStrategy class="com.github.danielwegener.logback.kafka.keying.RoundRobinKeyingStrategy"/>
+				<deliveryStrategy class="com.github.danielwegener.logback.kafka.delivery.AsynchronousDeliveryStrategy"/>
+				<producerConfig>bootstrap.servers=${kafkaBootstrap}</producerConfig>
+				<producerConfig>max.block.ms=5000</producerConfig>
+				<producerConfig>metadata.fetch.timeout.ms=5000</producerConfig>
+				<producerConfig>acks=0</producerConfig>
+				<producerConfig>compression.type=lz4</producerConfig>
+				<producerConfig>linger.ms=10</producerConfig>
+			</appender>
+
+			<appender name="ASYNC_KAFKA_ERROR" class="ch.qos.logback.classic.AsyncAppender">
+				<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+					<level>ERROR</level>
+				</filter>
+				<queueSize>1000</queueSize>
+				<neverBlock>false</neverBlock>
+				<appender-ref ref="KAFKA"/>
+			</appender>
+
+			<appender name="ASYNC_KAFKA" class="ch.qos.logback.classic.AsyncAppender">
+				<filter class="ch.qos.logback.classic.filter.LevelFilter">
+					<level>ERROR</level>
+					<onMatch>DENY</onMatch>
+					<onMismatch>ACCEPT</onMismatch>
+				</filter>
+				<queueSize>1000</queueSize>
+				<neverBlock>true</neverBlock>
+				<appender-ref ref="KAFKA"/>
+			</appender>
+		</then>
+	</if>
+
+	<root level="INFO">
+		<appender-ref ref="ASYNC_CONSOLE"/>
+	</root>
+
+	<!-- Add Kafka appenders if enable -->
+	<if condition='property("kafkaEnable").equalsIgnoreCase("true")'>
+		<then>
+			<root>
+				<appender-ref ref="ASYNC_KAFKA_ERROR"/>
+				<appender-ref ref="ASYNC_KAFKA"/>
+			</root>
+		</then>
+	</if>
+
+</configuration>
