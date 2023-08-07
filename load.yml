@@ -1,0 +1,12 @@
+---
+
+concurrency: 10
+base: 'http://localhost:9597'
+iterations: 10000
+
+plan:
+  - name: Teste
+    request:
+      url: /token
+      method: POST
+      body: '{"email": "email-grande.legal.11213@email.com"}'

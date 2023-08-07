@@ -1,0 +1,68 @@
+-- RUN 1
+Teste                     Total requests            10000
+Teste                     Successful requests       10000
+Teste                     Failed requests           0
+Teste                     Median time per request   10ms
+Teste                     Average time per request  13ms
+Teste                     Sample standard deviation 24ms
+Teste                     99.0'th percentile        170ms
+Teste                     99.5'th percentile        177ms
+Teste                     99.9'th percentile        241ms
+
+Time taken for tests      13.6 seconds
+Total requests            10000
+Successful requests       10000
+Failed requests           0
+Requests per second       735.41 [#/sec]
+Median time per request   10ms
+Average time per request  13ms
+Sample standard deviation 24ms
+99.0'th percentile        170ms
+99.5'th percentile        177ms
+99.9'th percentile        241ms
+
+-- RUN 2
+Teste                     Total requests            10000
+Teste                     Successful requests       10000
+Teste                     Failed requests           0
+Teste                     Median time per request   8ms
+Teste                     Average time per request  15ms
+Teste                     Sample standard deviation 90ms
+Teste                     99.0'th percentile        132ms
+Teste                     99.5'th percentile        136ms
+Teste                     99.9'th percentile        262ms
+
+Time taken for tests      15.3 seconds
+Total requests            10000
+Successful requests       10000
+Failed requests           0
+Requests per second       652.57 [#/sec]
+Median time per request   8ms
+Average time per request  15ms
+Sample standard deviation 90ms
+99.0'th percentile        132ms
+99.5'th percentile        136ms
+99.9'th percentile        262ms
+
+-- RUN 3
+Teste                     Total requests            10000
+Teste                     Successful requests       10000
+Teste                     Failed requests           0
+Teste                     Median time per request   7ms
+Teste                     Average time per request  8ms
+Teste                     Sample standard deviation 3ms
+Teste                     99.0'th percentile        15ms
+Teste                     99.5'th percentile        17ms
+Teste                     99.9'th percentile        23ms
+
+Time taken for tests      8.0 seconds
+Total requests            10000
+Successful requests       10000
+Failed requests           0
+Requests per second       1256.71 [#/sec]
+Median time per request   7ms
+Average time per request  8ms
+Sample standard deviation 3ms
+99.0'th percentile        15ms
+99.5'th percentile        17ms
+99.9'th percentile        23ms

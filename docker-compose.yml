@@ -70,9 +70,27 @@ services:
     image: quarkus-gelf-kafka
     environment:
       QUARKUS_LOG_HANDLER_GELF_ENABLED: "true"
+      QUARKUS_DATASOURCE_REACTIVE_URL: vertx-reactive:postgresql://db/quarkus
+      QUARKUS_DATASOURCE_JDBC_URL: jdbc:postgresql://db/quarkus 
     ports:
       - 9597:9597
     networks:
       - redpanda_network
     depends_on:
       - redpanda
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 500M
+  
+  db:
+    image: postgres:15.3
+    environment:
+      POSTGRES_PASSWORD: "password"
+      POSTGRES_USER: "username"
+      POSTGRES_DB: "quarkus"
+    ports:
+      - "5432:5432"
+    networks:
+      - redpanda_network
