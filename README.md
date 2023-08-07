@@ -1,60 +1,36 @@
-# quarkus-gelf-kafka
+## Example project
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+This project is a trial to use Quarkus with GELF logging with kafka transport.
 
-If you want to learn more about Quarkus, please visit its website: https://quarkus.io/ .
+### The Problem
 
-## Running the application in dev mode
+Basic what is happening is that GELF logging is not working in the native mode and prints `LogManager error of type WRITE_FAILURE: Could not send GELF message` to console.
 
-You can run your application in dev mode that enables live coding using:
-```shell script
-./mvnw compile quarkus:dev
+### How to run?
+
+First you need to start the kafka and kafka console manager (provided by redpanda docker-compose.yaml)
+
+```bash
+docker-compose up
 ```
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at http://localhost:8080/q/dev/.
+After that you can access the redpanda console at http://localhost:8089
 
-## Packaging and running the application
+#### JVM Mode
 
-The application can be packaged using:
-```shell script
-./mvnw package
-```
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
+just run `quarkus dev` and call the hello endpoint: `curl localhost:9597/hello`. Go back to the kafka console and you will see a new topic create with name `quarkus-gelf-kafka` with all the application logs
 
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
+#### Native mode
 
-If you want to build an _über-jar_, execute the following command:
-```shell script
-./mvnw package -Dquarkus.package.type=uber-jar
+build the native binary:
+
+```bash
+quarkus build --native
 ```
 
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
+Now run:
+```bash
+./target/quarkus-gelf-kafka-1.0.0-SNAPSHOT-runner
+``` 
 
-## Creating a native executable
-
-You can create a native executable using: 
-```shell script
-./mvnw package -Dnative
-```
-
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using: 
-```shell script
-./mvnw package -Dnative -Dquarkus.native.container-build=true
-```
-
-You can then execute your native executable with: `./target/quarkus-gelf-kafka-1.0.0-SNAPSHOT-runner`
-
-If you want to learn more about building native executables, please consult https://quarkus.io/guides/maven-tooling.
-
-## Related Guides
-
-- RESTEasy Reactive ([guide](https://quarkus.io/guides/resteasy-reactive)): A Jakarta REST implementation utilizing build time processing and Vert.x. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on it.
-
-## Provided Code
-
-### RESTEasy Reactive
-
-Easily start your Reactive RESTful Web Services
-
-[Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
+You can see that is printed a message: `LogManager error of type WRITE_FAILURE: Could not send GELF message` and if you call the hello endpoint again nothing is sent to kafka.
