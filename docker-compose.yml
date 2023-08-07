@@ -65,3 +65,14 @@ services:
       - redpanda_network
     depends_on:
       - redpanda
+    
+  quarkus-gelf-kafka:
+    image: quarkus-gelf-kafka
+    environment:
+      QUARKUS_LOG_HANDLER_GELF_ENABLED: "true"
+    ports:
+      - 9597:9597
+    networks:
+      - redpanda_network
+    depends_on:
+      - redpanda
