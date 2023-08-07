@@ -15,7 +15,9 @@ public class GreetingResource {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public String hello() {
-        LOG.info("teste de log legal");
+        LOG.info("Log INFO level");
+        LOG.warn("Log WARN level");
+        LOG.error("Log ERROR level");
         return "Hello from RESTEasy Reactive";
     }
 }
