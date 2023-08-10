@@ -1,0 +1,20 @@
+[
+    {
+        "type": "request-token",
+        "uri": "/token",
+        "method": "post",
+        "payload": {
+            "email": "email@email.com",
+            "duration": 30
+        }
+    },
+    {
+        "type": "verify-token",
+        "uri": "/token/verify",
+        "method": "post",
+        "payload": {
+            "email": "email@email.com",
+            "token": "ABC1"
+        }
+    }
+]

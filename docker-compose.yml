@@ -78,6 +78,7 @@ services:
       - redpanda_network
     depends_on:
       - redpanda
+      - db
     deploy:
       resources:
         limits:
